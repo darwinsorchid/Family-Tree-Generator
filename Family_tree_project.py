@@ -8,8 +8,6 @@ Print out the tree to the screen.
 
 import pandas as pd
 
-
-
 class Person():
     """
     The Person class acts as a template for the user to create instances,
@@ -26,42 +24,66 @@ class Person():
         else:
             self.death_date = ' '
         
-        
 
 def Take_Info():
     """
     Function that greets user & creates as many instances of the Person class as the user wants.
-    Returns a tuple of 5 variables. 
+    Returns a tuple of 6 variables. 
     Each variable is a list containing the same kind of attribute from different instances.
     """
-    print('Welcome to Family Tree Creator!')
-    fam_members = int(input('How many people do you want to be in this family tree? Enter a number: '))
+    print('Welcome to Family Tree Creator! \nPlease enter information about the members of the tree starting from the earliest ancestor.')
+    node_labels = []
     fam_names = []
     fam_genders = []
     fam_birth_dates = []
     fam_alive = []
     fam_death_dates = []
+    
+    #print('Please enter information about the members of the tree starting from the earliest ancestor.')
+    num = 0 
+    child_num = 0
 
-    # 1. The user enters their information -- USE THEM AS AN INITIAL NODE TO DETERMINE RELATIONS AND PATHS FOR TREE.
-    print('Please enter your information: ')
-    user_info = Person()
-    fam_names.append(user_info.name)
-    fam_genders.append(user_info.gender)
-    fam_birth_dates.append(user_info.birth_date)
-    fam_alive.append(user_info.alive)
-    fam_death_dates.append(user_info.death_date)
+    add_person = input('Do you want to add a person to this tree?')
 
-    # 2. The user enters their family's information 
-    for num in range(fam_members-1):
-        print(f'Please provide the following information for the next person.')
-        person = Person()
-        fam_names.append(person.name)
-        fam_genders.append(person.gender)
-        fam_birth_dates.append(person.birth_date)
-        fam_alive.append(person.alive)
-        fam_death_dates.append(person.death_date)
+    while add_person.lower()[0] == 'y':
+        num +=1 
+        # A1 = Earliest ancestor
+        a1 = Person()
+        fam_names.append(a1.name)
+        fam_genders.append(a1.gender)
+        fam_birth_dates.append(a1.birth_date)
+        fam_alive.append(a1.alive)
+        fam_death_dates.append(a1.death_date)
+        node_labels.append(f'Person{num}')
+        
+        
+        spouse = input('Does this person have a spouse?') # Earliest ancestor's spouse = S1
+        if spouse.lower()[0] == 'y':
+            sp = Person()
+            fam_names.append(sp.name)
+            fam_genders.append(sp.gender)
+            fam_birth_dates.append(sp.birth_date)
+            fam_alive.append(sp.alive)
+            fam_death_dates.append(sp.death_date)
+            node_labels.append(f'Spouse{num}')
+        else:
+            break
 
-    return fam_names, fam_genders, fam_birth_dates, fam_alive, fam_death_dates # GOING TO RETURN A TUPLE OF LISTS!
+        
+        child = input('Do they have a child?') # First gen children 
+        while child.lower()[0] == 'y':
+            child_num +=1 
+            ch = Person()
+            fam_names.append(ch.name)
+            fam_genders.append(ch.gender)
+            fam_birth_dates.append(ch.birth_date)
+            fam_alive.append(ch.alive)
+            fam_death_dates.append(ch.death_date)
+            node_labels.append(f'Child{child_num}')
+            break 
+
+        add_person = input('Do you want to add another person to this tree?')
+    return node_labels, fam_names, fam_genders, fam_birth_dates, fam_alive, fam_death_dates # GOING TO RETURN A TUPLE OF LISTS!
 
 
 def Create_df():
@@ -76,11 +98,12 @@ def Create_df():
     3. Create dataframe from created dictionary.
     Returns a dataframe object.
     """
-    a, b, c, d, e = Take_Info()
-    family_data = {'Name': a, 'Gender': b, 'Date of birth': c, 'Alive': d, 'Date of death': e}
+    a, b, c, d, e, f = Take_Info()
+    family_data = {'Relations': a ,'Name': b, 'Gender': c, 'Date of birth': d, 'Alive': e, 'Date of death': f}
 
     df= pd.DataFrame(family_data)
     return df
 
 df = Create_df()
-print(df)
+
+
