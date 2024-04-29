@@ -25,6 +25,7 @@ class Person():
             self.death_date = input('Year of death: ')
         else:
             self.death_date = '-'
+        self.children = ''
 
         spouse = input('Do they have a spouse? ')
         if spouse.lower()[0] == 'y':
@@ -32,7 +33,7 @@ class Person():
             children = int(input('How many children do they have? Please enter a number. '))
             if children != 0:
                 for i in range(children):
-                    self.children = input(f"Please enter child{i+1} name: ")
+                    self.children += input(f"Please enter child{i+1} name: ") + ' ' # Each person's children = space separated string
             else:
                 self.children = '-'
         else:
@@ -54,7 +55,7 @@ def Take_Info():
     birth_dates = []
     death_dates = []
     spouses = []
-    children = []
+    children = [] # list of space separated strings of each person's children
     
 
     choice = int(input('How many people in total do you want this tree to have? Please enter a number. '))
@@ -97,8 +98,8 @@ def Create_Tree(df):
     Function that takes in dataframe created by Create_df function as argument.
     Creates nodes and edges checking for double edges.
     Returns rendered tree graph.
-
     """
+
     print(df)
 
     tree_graph = graphviz.Digraph(format = 'pdf')
@@ -109,16 +110,18 @@ def Create_Tree(df):
         # Create nodes
         tree_graph.node(str(df['Name'][i]), 
                         shape = 'box' if df['Gender'][i].lower()[0] == 'm' else 'ellipse', 
-                        style = 'filled' if df['Death'][i] != '-' else '',color = 'grey')
+                        style = 'filled' if df['Death'][i] != '-' else '', color = 'grey')
         
         if df['Spouse'][i] != '-' and (str(df['Spouse'][i]), str(df['Name'][i])) not in spouses:
             tree_graph.edge(str(df['Name'][i]), str(df['Spouse'][i]),
-                            arrowhead = 'none', penwidth='3', color='black:white:black', constraint = 'false')
+                            arrowhead = 'none', color='black:invis:black', constraint = 'false')
             spouses.append((str(df['Name'][i]), str(df['Spouse'][i])))
 
         if df['Children'][i] != '-' and df['Children'][i] not in children:
-            tree_graph.edge(str(df['Name'][i]), str(df['Children'][i]), arrowhead = 'none')
-            children.add(df['Children'][i])
+            children_list = df['Children'][i].split()
+            for child in children_list:
+                tree_graph.edge(str(df['Name'][i]), child, arrowhead = 'none')
+                children.add(df['Children'][i])
 
     tree_graph.source
     tree_graph.render('C:/Users/alexa/OneDrive/Έγγραφα/Family Tree Creator/Family_Tree_Graph', view = True)
