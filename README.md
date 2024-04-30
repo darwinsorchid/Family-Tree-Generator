@@ -5,4 +5,4 @@ Input: User creates instances of a 'Person' class
 Output: Tree graph in pdf format 
 
 - [Installation] 
-pandas, graphviz libraries
+pandas, graphviz
