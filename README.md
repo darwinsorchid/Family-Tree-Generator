@@ -1,4 +1,4 @@
-# "Family Tree Creator" 
+# "Family Tree Generator" 
 
 ## Description
 Python project - Generating a family tree graph from user input about family members. 
